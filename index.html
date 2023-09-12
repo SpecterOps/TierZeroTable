@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TierZeroTable</title>
+  <style>
+    body {
+      font-family: 'Nunito Sans', Arial, sans-serif;
+      background-color: #fff;
+      color: #000;
+      padding: 20px;
+    }
+
+    .table-container {
+      overflow-x: auto;
+      max-width: 100%;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-bottom: 20px;
+      table-layout: fixed;
+    }
+
+    th {
+      background-color: #999999;
+      color: #000;
+      text-align: left;
+      padding: 7px;
+      border-bottom: 2px solid #000;
+      overflow: auto;
+	  height: 3em;
+	  overflow-wrap: break-word;
+    }
+
+    td {
+      text-align: left;
+      vertical-align: top;
+	  padding: 7px;
+      border-bottom: 1px solid #888;
+    }
+
+	div {
+	  height: 45px;
+	  display: block;
+	  overflow: auto;
+	  overflow-wrap: break-word;
+	} ::-webkit-scrollbar {
+	  width: 0;  /* Remove scrollbar space */
+	  background: transparent;  /* Optional: just make scrollbar invisible */
+    }
+
+    tr:nth-child(even) {
+      background-color: #D5D5D5;
+    }
+    
+    a:link {
+      color: black;
+      background-color: transparent;
+      text-decoration: underline;
+    }
+
+    a:visited {
+      color: black;
+      background-color: transparent;
+      text-decoration: underline;
+    }
+    
+  </style>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito+Sans">
+</head>
+<body>
+  <h1 class="title">TierZeroTable</h1>
+
+  <p class="line1">Table of AD and Azure assets and whether they belong to Tier Zero.</p>
+  <p class="line2">Description of table columns and additional resources can be found here: <a href="https://github.com/SpecterOps/TierZeroTable/">https://github.com/SpecterOps/TierZeroTable</a></p>
+  <p class="line3">Hint: Click on a header to sort the table alphabetically.</p>
+
+  <table id="csvTable"></table>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+  <script>
+    // URL of the CSV file
+    var csvFileUrl = 'https://raw.githubusercontent.com/SpecterOps/TierZeroTable/main/TierZeroTable.csv';
+
+	// Sort by header
+	function sortTable(n) {
+	  var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+	  table = document.getElementById("csvTable");
+	  switching = true;
+	  //Set the sorting direction to ascending:
+	  dir = "asc"; 
+	  /*Make a loop that will continue until
+	  no switching has been done:*/
+	  while (switching) {
+		//start by saying: no switching is done:
+		switching = false;
+		rows = table.rows;
+		/*Loop through all table rows (except the
+		first, which contains table headers):*/
+		for (i = 1; i < (rows.length - 1); i++) {
+		  //start by saying there should be no switching:
+		  shouldSwitch = false;
+		  /*Get the two elements you want to compare,
+		  one from current row and one from the next:*/
+		  x = rows[i].getElementsByTagName("TD")[n];
+		  y = rows[i + 1].getElementsByTagName("TD")[n];
+		  /*check if the two rows should switch place,
+		  based on the direction, asc or desc:*/
+		  if (dir == "asc") {
+			if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+			  //if so, mark as a switch and break the loop:
+			  shouldSwitch= true;
+			  break;
+			}
+		  } else if (dir == "desc") {
+			if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+			  //if so, mark as a switch and break the loop:
+			  shouldSwitch = true;
+			  break;
+			}
+		  }
+		}
+		if (shouldSwitch) {
+		  /*If a switch has been marked, make the switch
+		  and mark that a switch has been done:*/
+		  rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+		  switching = true;
+		  //Each time a switch is done, increase this count by 1:
+		  switchcount ++;      
+		} else {
+		  /*If no switching has been done AND the direction is "asc",
+		  set the direction to "desc" and run the while loop again.*/
+		  if (switchcount == 0 && dir == "asc") {
+			dir = "desc";
+			switching = true;
+		  }
+		}
+	  }
+	}
+
+    // Function to create and populate the table
+    function createTable(data) {
+		var table = document.getElementById('csvTable');
+
+		// Create table headers
+		var headers = Object.keys(data[0]);
+		var headerRow = table.insertRow();
+
+		headers.forEach(function(header, index) {
+		  var th = document.createElement('th');
+		  th.textContent = header;
+		  th.onclick = function() {
+			sortTable(index);
+		  };
+		  headerRow.appendChild(th);
+		});
+
+		// Populate table with data
+		data.forEach(function(rowData, index) {
+			if (rowData[headers[0]] != "") {
+				console.log();
+				var row = table.insertRow();
+				if (index % 2 === 0) {
+				  row.classList.add('even');
+				}
+				headers.forEach(function(header) {
+				  var cell = row.insertCell();
+				  var cellText = rowData[header];
+				  var cellContent = document.createElement('div');
+				  cellContent.textContent = cellText;
+				  cell.appendChild(cellContent);
+				});
+			}
+		});
+	}
+
+    // Load Papa Parse library
+    window.onload = function() {
+      Papa.parse(csvFileUrl, {
+        download: true,
+        header: true,
+        complete: function(results) {
+          var data = results.data;
+          createTable(data);
+        }
+      });
+    };
+  </script>
+</body>
+</html>
