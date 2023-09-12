@@ -1,7 +1,7 @@
 # TierZeroTable
 Table of AD and Azure assets and whether they belong to Tier Zero.
 
-View the table here: [https://bloodhoundad.github.io/TierZeroTable](https://specterops.github.io/TierZeroTable/)
+View the table here: [https://specterops.github.io/TierZeroTable](https://specterops.github.io/TierZeroTable/)
 
 Blog posts: 
   - [What is Tier Zero - Part 1](https://posts.specterops.io/what-is-tier-zero-part-1-e0da9b7cdfca)
