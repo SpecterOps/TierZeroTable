@@ -65,7 +65,7 @@ Values:
 - N/A - Compromise by default - A publicly known abuse technique to compromise Tier Zero assets exists and works in environments with default configurations, hence it does not require any special configuration.
 
 ### Is Tier Zero
-If the asset should be considered Tier Zero based on our [Definition of Tier Zero](https://github.com/JonasBK/TierZeroTable/tree/main#definition-of-tier-zero).
+If the asset should be considered Tier Zero based on our [Definition of Tier Zero](https://github.com/SpecterOps/TierZeroTable/tree/main#definition-of-tier-zero).
 
 ### Reasoning
 The explanation of why the asset is/isn't Tier Zero, including an abuse summary and if the asset is a security dependency for Tier Zero.
