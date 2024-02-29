@@ -8,8 +8,8 @@ Blog posts:
   - [What is Tier Zero - Part 2](https://posts.specterops.io/what-is-tier-zero-part-2-6e1d14fddcaf)
 
 Webinars:
-  - [Defining the Undefined: What is Tier Zero](https://specterops.zoom.us/webinar/register/WN_hOwvqBQ3Q7-9dGS-urDj9w)
-  - [Defining the Undefined: What is Tier Zero Part II](https://specterops.zoom.us/webinar/register/WN_aROefO96TZqgOUM2bqVE7A)
+  - [Defining the Undefined: What is Tier Zero](https://www.youtube.com/watch?v=5Ho83R9Jy68)
+  - [Defining the Undefined: What is Tier Zero Part II](https://www.youtube.com/watch?v=SAI3mXQgy_I)
 
 **DISCLAIMER: The table does not include all Tier Zero assets yet.** We will add assets to the table throughout the webinar series. So if you think we are missing something, then you are completely right. But feel free to make a pull request or open an issue with the asset you think we should add. All contributions are appreciated. Also if you disagree on something in the table :)
 
@@ -91,6 +91,7 @@ In which episode of the _What is Tier Zero_ series was this asset discussed.
 Values:
 - 1
 - 2
+- Community contribution
 
 ### External links
 Links to documentation for the asset, abuse information, etc.
