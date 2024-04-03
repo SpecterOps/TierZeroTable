@@ -10,6 +10,7 @@ Blog posts:
 Webinars:
   - [Defining the Undefined: What is Tier Zero](https://www.youtube.com/watch?v=5Ho83R9Jy68)
   - [Defining the Undefined: What is Tier Zero Part II](https://www.youtube.com/watch?v=SAI3mXQgy_I)
+  - [Defining the Undefined: What is Tier Zero Part III](https://specterops.zoom.us/webinar/register/WN_0It_u8csQnmTHE_GYO7aYQ#/registration)
 
 **DISCLAIMER: The table does not include all Tier Zero assets yet.** We will add assets to the table throughout the webinar series. So if you think we are missing something, then you are completely right. But feel free to make a pull request or open an issue with the asset you think we should add. All contributions are appreciated. Also if you disagree on something in the table :)
 
@@ -30,12 +31,14 @@ Values:
 - AD user
 - Computer host
 - DC group
+- Entra ID role
 
 ### IdP
 Identity Provider of the asset.
 
 Values:
 - Active Directory
+- Entra ID
 
 ### Identification
 How the asset can be identified. E.g., SID of AD object.
@@ -67,11 +70,16 @@ Values:
 ### Is Tier Zero
 If the asset should be considered Tier Zero based on our [Definition of Tier Zero](https://github.com/SpecterOps/TierZeroTable/tree/main#definition-of-tier-zero).
 
+Values:
+- YES
+- NO
+- IT DEPENDS: If the asset is Tier Zero in some legitimate configuration but not always
+
 ### Reasoning
-The explanation of why the asset is/isn't Tier Zero, including an abuse summary and if the asset is a security dependency for Tier Zero.
+The explanation of why the asset is or is not Tier Zero, including an abuse summary and if the asset is a security dependency for Tier Zero.
 
 ### Microsoft: Privileged access security roles
-Whether the asset is included in Microsoft's [Privileged access security roles](https://learn.microsoft.com/en-us/security/privileged-access-workstations/privileged-access-security-levels) list.
+Whether the asset is included in Microsoft's [Privileged access security roles](https://learn.microsoft.com/en-us/security/privileged-access-workstations/privileged-access-security-levels#privileged) list, or has a "PRIVILEGED" label if an Entra ID role. 
 
 Values:
 - YES
@@ -83,7 +91,7 @@ Whether the asset is part of the default [Protected Accounts and Groups in Activ
 Values:
 - YES
 - NO
-- Not applicable
+- N/A
 
 ### What is Tier Zero episode
 In which episode of the _What is Tier Zero_ series was this asset discussed.
@@ -91,6 +99,7 @@ In which episode of the _What is Tier Zero_ series was this asset discussed.
 Values:
 - 1
 - 2
+- 3
 - Community contribution
 
 ### External links
