@@ -10,7 +10,7 @@ Blog posts:
 Webinars:
   - [Defining the Undefined: What is Tier Zero](https://www.youtube.com/watch?v=5Ho83R9Jy68)
   - [Defining the Undefined: What is Tier Zero Part II](https://www.youtube.com/watch?v=SAI3mXQgy_I)
-  - [Defining the Undefined: What is Tier Zero Part III](https://specterops.zoom.us/webinar/register/WN_0It_u8csQnmTHE_GYO7aYQ#/registration)
+  - [Defining the Undefined: What is Tier Zero Part III](https://www.youtube.com/watch?v=ykrse1rsvy4)
 
 **DISCLAIMER: The table does not include all Tier Zero assets yet.** We will add assets to the table throughout the webinar series. So if you think we are missing something, then you are completely right. But feel free to make a pull request or open an issue with the asset you think we should add. All contributions are appreciated. Also if you disagree on something in the table :)
 
