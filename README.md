@@ -46,7 +46,7 @@ How the asset can be identified. E.g., SID of AD object.
 ### Description
 Description of the asset, i.e., its purpose of existence. This will be copied from Microsoft documentation if available.
 
-### Known Tier Zero compromise by default configuration
+### Compromise by default
 Whether a publicly known abuse technique exists that allows compromise of Tier Zero assets using this asset. The abuse technique must work in an environment with default configurations.
 
 If a publicly known abuse technique exists it will be described in the _Reasoning_ column and links will be provided in the _External links_ column.
@@ -56,7 +56,7 @@ Values:
 - YES - Disruption - A publicly known abuse technique to disrupt the operations of Tier Zero assets exists and works in environments with default configurations.
 - NO - No publicly known abuse technique to compromise Tier Zero assets in an environment with default configurations exists.
 
-### Known Tier Zero compromise by common (mis)configuration
+### Compromise by configuration
 Whether a publicly known abuse technique exists that allows compromise of Tier Zero assets using this asset, which is enabled do to a common non-default (mis)configuration.
 
 If a publicly known abuse technique exists it will be described in the _Reasoning_ column and links will be provided in the _External links_ column.
@@ -78,7 +78,10 @@ Values:
 ### Reasoning
 The explanation of why the asset is or is not Tier Zero, including an abuse summary and if the asset is a security dependency for Tier Zero.
 
-### Microsoft: Privileged access security roles
+### Cypher query
+Cypher query to return the node representing the asset in [BloodHound](https://github.com/specterOps/BloodHound).
+
+### Privileged access security role
 Whether the asset is included in Microsoft's [Privileged access security roles](https://learn.microsoft.com/en-us/security/privileged-access-workstations/privileged-access-security-levels#privileged) list, or has a "PRIVILEGED" label if an Entra ID role. 
 
 Values:
