@@ -15,57 +15,97 @@
       max-width: 100%;
     }
 
+    .search-container {
+      max-width: 100%;
+      overflow-x: auto;
+    }
+
+    .search-input {
+      margin-bottom: 10px;
+      width: 100%;
+      min-width: 1000px; /* Match the table's min-width */
+      padding: 8px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+
     table {
       border-collapse: collapse;
       width: 100%;
+      min-width: 1000px;
       margin-bottom: 20px;
       table-layout: fixed;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 7px;
+      border-bottom: 1px solid #888;
+      vertical-align: top;
+      word-wrap: break-word;
+      word-break: break-word;
     }
 
     th {
       background-color: #999999;
       color: #000;
-      text-align: left;
-      padding: 7px;
       border-bottom: 2px solid #000;
-      overflow: auto;
-	  height: 3em;
-	  overflow-wrap: break-word;
+      cursor: pointer;
+      position: relative;
     }
 
-    td {
-      text-align: left;
-      vertical-align: top;
-	  padding: 7px;
-      border-bottom: 1px solid #888;
+    th:hover {
+      background-color: #bbb;
     }
 
-	div {
-	  height: 45px;
-	  display: block;
-	  overflow: auto;
-	  overflow-wrap: break-word;
-	} ::-webkit-scrollbar {
-	  width: 0;  /* Remove scrollbar space */
-	  background: transparent;  /* Optional: just make scrollbar invisible */
+    .sort-icon {
+      position: absolute;
+      right: 10px;
+      font-size: 12px;
+    }
+
+    .sorted-asc::after {
+      content: ' ▲';
+    }
+
+    .sorted-desc::after {
+      content: ' ▼';
     }
 
     tr:nth-child(even) {
       background-color: #D5D5D5;
     }
-    
-    a:link {
-      color: black;
-      background-color: transparent;
+
+    a:link, a:visited {
+      color: blue;
       text-decoration: underline;
     }
 
-    a:visited {
-      color: black;
-      background-color: transparent;
-      text-decoration: underline;
+    /* Truncate class to limit the number of lines */
+    .truncate {
+      display: -webkit-box;
+      -webkit-line-clamp: 5;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
-    
+
+    .expand-btn {
+      color: blue;
+      cursor: pointer;
+      display: block;
+      margin-top: 5px;
+      background-color: transparent;
+      border: none;
+      padding: 0;
+      font-size: 14px;
+    }
+
+    /* Style for "No results found" message */
+    .no-results {
+      text-align: center;
+      font-size: 18px;
+      margin-top: 20px;
+    }
   </style>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito+Sans">
 </head>
@@ -76,116 +116,228 @@
   <p class="line2">Description of table columns and additional resources can be found here: <a href="https://github.com/SpecterOps/TierZeroTable/">https://github.com/SpecterOps/TierZeroTable</a></p>
   <p class="line3">Hint: Click on a header to sort the table alphabetically.</p>
 
-  <table id="csvTable"></table>
+  <!-- Search Input inside a container -->
+  <div class="search-container">
+    <input type="text" id="searchInput" class="search-input" placeholder="Search...">
+  </div>
 
+  <div class="table-container">
+    <table id="csvTable">
+      <!-- Table content will be inserted here by JavaScript -->
+    </table>
+  </div>
+
+  <!-- "No results found" message -->
+  <div id="noResultsMessage" class="no-results" style="display: none;">No results found.</div>
+
+  <!-- Include Papa Parse Library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+  <!-- Include LinkifyJS Library -->
+  <script src="https://cdn.jsdelivr.net/npm/linkifyjs@3.0.3/dist/linkify.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/linkifyjs@3.0.3/dist/linkify-html.min.js"></script>
   <script>
     // URL of the CSV file
     var csvFileUrl = 'https://raw.githubusercontent.com/SpecterOps/TierZeroTable/main/TierZeroTable.csv';
 
-	// Sort by header
-	function sortTable(n) {
-	  var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
-	  table = document.getElementById("csvTable");
-	  switching = true;
-	  //Set the sorting direction to ascending:
-	  dir = "asc"; 
-	  /*Make a loop that will continue until
-	  no switching has been done:*/
-	  while (switching) {
-		//start by saying: no switching is done:
-		switching = false;
-		rows = table.rows;
-		/*Loop through all table rows (except the
-		first, which contains table headers):*/
-		for (i = 1; i < (rows.length - 1); i++) {
-		  //start by saying there should be no switching:
-		  shouldSwitch = false;
-		  /*Get the two elements you want to compare,
-		  one from current row and one from the next:*/
-		  x = rows[i].getElementsByTagName("TD")[n];
-		  y = rows[i + 1].getElementsByTagName("TD")[n];
-		  /*check if the two rows should switch place,
-		  based on the direction, asc or desc:*/
-		  if (dir == "asc") {
-			if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
-			  //if so, mark as a switch and break the loop:
-			  shouldSwitch= true;
-			  break;
-			}
-		  } else if (dir == "desc") {
-			if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
-			  //if so, mark as a switch and break the loop:
-			  shouldSwitch = true;
-			  break;
-			}
-		  }
-		}
-		if (shouldSwitch) {
-		  /*If a switch has been marked, make the switch
-		  and mark that a switch has been done:*/
-		  rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-		  switching = true;
-		  //Each time a switch is done, increase this count by 1:
-		  switchcount ++;      
-		} else {
-		  /*If no switching has been done AND the direction is "asc",
-		  set the direction to "desc" and run the while loop again.*/
-		  if (switchcount == 0 && dir == "asc") {
-			dir = "desc";
-			switching = true;
-		  }
-		}
-	  }
-	}
+    var table; // Declare table variable in global scope
+    var sortDirections = {}; // To keep track of sort directions for each column
+    var originalData = []; // Global variable to store original data
+    var headers; // Global variable to store headers
+    var currentData = []; // Current displayed data
+    var currentSortedColumnIndex = null; // Currently sorted column index
+    var currentSortDirection = 'none'; // Current sort direction
 
     // Function to create and populate the table
-    function createTable(data) {
-		var table = document.getElementById('csvTable');
+    function createTable(data, sortedColumnIndex = null, sortDirection = 'none') {
+      table = document.getElementById('csvTable');
+      table.innerHTML = ''; // Clear existing table content
 
-		// Create table headers
-		var headers = Object.keys(data[0]);
-		var headerRow = table.insertRow();
+      if (data.length === 0) {
+        document.getElementById('noResultsMessage').style.display = 'block';
+        return;
+      } else {
+        document.getElementById('noResultsMessage').style.display = 'none';
+      }
 
-		headers.forEach(function(header, index) {
-		  var th = document.createElement('th');
-		  th.textContent = header;
-		  th.onclick = function() {
-			sortTable(index);
-		  };
-		  headerRow.appendChild(th);
-		});
+      headers = Object.keys(data[0]);
+      var thead = document.createElement('thead');
+      var headerRow = document.createElement('tr');
 
-		// Populate table with data
-		data.forEach(function(rowData, index) {
-			if (rowData[headers[0]] != "") {
-				console.log();
-				var row = table.insertRow();
-				if (index % 2 === 0) {
-				  row.classList.add('even');
-				}
-				headers.forEach(function(header) {
-				  var cell = row.insertCell();
-				  var cellText = rowData[header];
-				  var cellContent = document.createElement('div');
-				  cellContent.textContent = cellText;
-				  cell.appendChild(cellContent);
-				});
-			}
-		});
-	}
+      headers.forEach(function(header, index) {
+        var th = document.createElement('th');
+        th.textContent = header;
+        th.onclick = function() {
+          sortTable(index);
+        };
+        th.title = 'Click to sort by ' + header;
+        th.style.position = 'relative';
 
-    // Load Papa Parse library
+        // Add sort icon span
+        var sortIcon = document.createElement('span');
+        sortIcon.className = 'sort-icon';
+        th.appendChild(sortIcon);
+
+        // Add sort indicator if this is the sorted column
+        if (index === sortedColumnIndex) {
+          if (sortDirection === 'asc') {
+            th.classList.add('sorted-asc');
+          } else if (sortDirection === 'desc') {
+            th.classList.add('sorted-desc');
+          }
+        }
+
+        headerRow.appendChild(th);
+      });
+
+      thead.appendChild(headerRow);
+      table.appendChild(thead);
+
+      // Populate table with data
+      var tbody = document.createElement('tbody');
+
+      data.forEach(function(rowData) {
+        if (rowData[headers[0]] !== "") {
+          var row = document.createElement('tr');
+          headers.forEach(function(header) {
+            var cell = document.createElement('td');
+            var cellText = rowData[header];
+
+            // Process the cell text to convert URLs into hyperlinks using LinkifyJS
+            var processedText = linkifyHtml(cellText, {
+              defaultProtocol: 'https'
+            });
+
+            // Create a temporary element to strip HTML tags and get text length
+            var tempElement = document.createElement('div');
+            tempElement.innerHTML = processedText;
+            var textContent = tempElement.textContent || tempElement.innerText || '';
+
+            // Adjusted length threshold to 100 characters
+            if (textContent.length > 100) { // Adjust the length as needed
+              var span = document.createElement('span');
+              span.className = 'truncate';
+              span.innerHTML = processedText; // Full processed text with hyperlinks
+
+              var expandBtn = document.createElement('button');
+              expandBtn.className = 'expand-btn';
+              expandBtn.textContent = 'Read more';
+              expandBtn.setAttribute('aria-expanded', 'false');
+
+              expandBtn.onclick = function() {
+                if (span.classList.contains('truncate')) {
+                  // Expand the text
+                  span.classList.remove('truncate');
+                  expandBtn.textContent = 'Read less';
+                  expandBtn.setAttribute('aria-expanded', 'true');
+                } else {
+                  // Collapse the text
+                  span.classList.add('truncate');
+                  expandBtn.textContent = 'Read more';
+                  expandBtn.setAttribute('aria-expanded', 'false');
+                }
+              };
+
+              cell.appendChild(span);
+              cell.appendChild(expandBtn);
+            } else {
+              cell.innerHTML = processedText;
+            }
+
+            row.appendChild(cell);
+          });
+          tbody.appendChild(row);
+        }
+      });
+
+      table.appendChild(tbody);
+    }
+
+    // Load Papa Parse library and initialize the table
     window.onload = function() {
       Papa.parse(csvFileUrl, {
         download: true,
         header: true,
         complete: function(results) {
-          var data = results.data;
-          createTable(data);
+          originalData = results.data.filter(function(row) {
+            return Object.values(row).some(function(value) {
+              return value !== null && value !== '';
+            });
+          });
+          currentData = originalData.slice(); // Copy of the original data
+          createTable(currentData);
+
+          // Add search functionality
+          document.getElementById('searchInput').addEventListener('keyup', function() {
+            var filter = this.value.toLowerCase();
+            var filteredData = originalData.filter(function(row) {
+              return Object.values(row).some(function(value) {
+                return value.toLowerCase().indexOf(filter) > -1;
+              });
+            });
+
+            // Apply current sorting to the filtered data
+            if (currentSortedColumnIndex !== null && currentSortDirection !== 'none') {
+              var n = currentSortedColumnIndex;
+              var dir = currentSortDirection;
+              filteredData.sort(function(a, b) {
+                var x = a[headers[n]] ? a[headers[n]].toLowerCase() : '';
+                var y = b[headers[n]] ? b[headers[n]].toLowerCase() : '';
+                if (x < y) return dir === 'asc' ? -1 : 1;
+                if (x > y) return dir === 'asc' ? 1 : -1;
+                return 0;
+              });
+            }
+
+            currentData = filteredData; // Update current data
+            createTable(filteredData, currentSortedColumnIndex, currentSortDirection);
+          });
         }
       });
     };
+
+    // Sort by header function with sort indicators
+    function sortTable(n) {
+      var currentDir = sortDirections[n] || 'none';
+
+      // Cycle through sort directions: none -> asc -> desc -> none
+      if (currentDir === 'none') {
+        sortDirections[n] = 'asc';
+      } else if (currentDir === 'asc') {
+        sortDirections[n] = 'desc';
+      } else {
+        sortDirections[n] = 'none';
+      }
+
+      var dir = sortDirections[n];
+
+      if (dir === 'asc' || dir === 'desc') {
+        // Update current sorted column and direction
+        currentSortedColumnIndex = n;
+        currentSortDirection = dir;
+      } else {
+        // Reset sorting
+        currentSortedColumnIndex = null;
+        currentSortDirection = 'none';
+        sortDirections[n] = 'none';
+      }
+
+      var dataToSort = currentData.slice(); // Make a copy of the current data
+
+      if (dir === 'asc' || dir === 'desc') {
+        dataToSort.sort(function(a, b) {
+          var x = a[headers[n]] ? a[headers[n]].toLowerCase() : '';
+          var y = b[headers[n]] ? b[headers[n]].toLowerCase() : '';
+          if (x < y) return dir === 'asc' ? -1 : 1;
+          if (x > y) return dir === 'asc' ? 1 : -1;
+          return 0;
+        });
+      } else {
+        dataToSort = originalData.slice(); // Return to original order
+      }
+
+      currentData = dataToSort; // Update current data
+      createTable(dataToSort, currentSortedColumnIndex, currentSortDirection);
+    }
   </script>
 </body>
 </html>
