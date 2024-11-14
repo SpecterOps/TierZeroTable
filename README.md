@@ -11,6 +11,7 @@ Webinars:
   - [Defining the Undefined: What is Tier Zero](https://www.youtube.com/watch?v=5Ho83R9Jy68)
   - [Defining the Undefined: What is Tier Zero Part II](https://www.youtube.com/watch?v=SAI3mXQgy_I)
   - [Defining the Undefined: What is Tier Zero Part III](https://www.youtube.com/watch?v=ykrse1rsvy4)
+  - [Defining the Undefined: What is Tier Zero Part IV](https://ghst.ly/4eSssxL)
 
 **DISCLAIMER: The table does not include all Tier Zero assets yet.** We will add assets to the table throughout the webinar series. So if you think we are missing something, then you are completely right. But feel free to make a pull request or open an issue with the asset you think we should add. All contributions are appreciated. Also if you disagree on something in the table :)
 
@@ -25,9 +26,9 @@ Type of the asset.
 Values:
 - AD computer
 - AD container
-- AD domain
-- AD GPO 
 - AD group
+- AD object
+- AD OU
 - AD user
 - Computer host
 - DC group
@@ -55,6 +56,7 @@ Values:
 - YES - Takeover - A publicly known abuse technique to takeover one or more Tier Zero assets exists and works in environments with default configurations.
 - YES - Disruption - A publicly known abuse technique to disrupt the operations of Tier Zero assets exists and works in environments with default configurations.
 - NO - No publicly known abuse technique to compromise Tier Zero assets in an environment with default configurations exists.
+- IT DEPENDS - A publicly known abuse technique to takeover or disrupt Tier Zero exists and works in some configurations.
 
 ### Compromise by configuration
 Whether a publicly known abuse technique exists that allows compromise of Tier Zero assets using this asset, which is enabled do to a common non-default (mis)configuration.
@@ -73,7 +75,7 @@ If the asset should be considered Tier Zero based on our [Definition of Tier Zer
 Values:
 - YES
 - NO
-- IT DEPENDS: If the asset is Tier Zero in some legitimate configuration but not always
+- IT DEPENDS - If the asset is Tier Zero in some legitimate configuration but not always.
 
 ### Reasoning
 The explanation of why the asset is or is not Tier Zero, including an abuse summary and if the asset is a security dependency for Tier Zero.
@@ -94,7 +96,7 @@ Whether the asset is part of the default [Protected Accounts and Groups in Activ
 Values:
 - YES
 - NO
-- N/A
+- N/A - The asset cannot be protected by AdminSDHolder.
 
 ### What is Tier Zero episode
 In which episode of the _What is Tier Zero_ series was this asset discussed.
@@ -103,6 +105,7 @@ Values:
 - 1
 - 2
 - 3
+- 4
 - Community contribution
 
 ### External links
