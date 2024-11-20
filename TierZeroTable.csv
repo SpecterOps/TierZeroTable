@@ -26,12 +26,12 @@ Important: Users with this role can change credentials for people who may have a
 - Security Group and Microsoft 365 group owners, who can manage group membership. Those groups may grant access to sensitive or private information or critical configuration in Microsoft Entra ID and elsewhere.
 - Administrators in other services outside of Microsoft Entra ID like Exchange Online, Microsoft 365 Defender portal, and Microsoft Purview compliance portal, and human resources systems.
 - Non-administrators like executives, legal counsel, and human resources employees who may have access to sensitive or private information.";YES - Takeover;N/A - Compromise by default;YES;The Privileged Authentication Administrator role can set or reset any authentication method (including passwords) for any principal, including principals with the Global Administrator role. The role is therefore considered Tier Zero.;"MATCH (n:AZRole) 
-WHERE n.objectid STARTS WITH '62E90394-69F5-4237-9190-012177145E10@'
+WHERE n.objectid STARTS WITH '7BE44C8A-ADAF-4E2A-84D6-AB2649E08A13@'
 RETURN n";YES;N/A;3;https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/permissions-reference#privileged-authentication-administrator
 Privileged Role Administrator;Entra ID role;Entra ID;Template ID: e8611ab8-c189-46e8-94e1-60213ab1f814;"This is a privileged role. Users with this role can manage role assignments in Microsoft Entra ID, as well as within Microsoft Entra Privileged Identity Management. They can create and manage groups that can be assigned to Microsoft Entra roles. In addition, this role allows management of all aspects of Privileged Identity Management and administrative units.
 
  Important: This role grants the ability to manage assignments for all Microsoft Entra roles including the Global Administrator role. This role does not include any other privileged abilities in Microsoft Entra ID like creating or updating users. However, users assigned to this role can grant themselves or others additional privilege by assigning additional roles.";YES - Takeover;N/A - Compromise by default;YES;The Privileged Role Administrator role can grant any other admin role to any principal at the tenant level. The role is therefore considered Tier Zero.;"MATCH (n:AZRole) 
-WHERE n.objectid STARTS WITH '7BE44C8A-ADAF-4E2A-84D6-AB2649E08A13@'
+WHERE n.objectid STARTS WITH 'E8611AB8-C189-46E8-94E1-60213AB1F814@'
 RETURN n";YES;N/A;3;https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/permissions-reference#privileged-role-administrator
 Application Administrator;Entra ID role;Entra ID;Template ID: 9b895d92-2cd3-44c7-9d02-a6ac2d5ea5c3;"This is a privileged role. Users in this role can create and manage all aspects of enterprise applications, application registrations, and application proxy settings. Note that users assigned to this role are not added as owners when creating new application registrations or enterprise applications.
 
