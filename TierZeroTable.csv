@@ -11,7 +11,8 @@ It is possible to delete all GenericAll ACEs for Account Operators on Tier Zero 
 WHERE n.objectid ENDS WITH 'S-1-5-32-548'
 RETURN n";YES;YES;1;"https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/manage/understand-security-groups#account-operators
 https://www.whiteoaksecurity.com/blog/account-operators-privilege-escalation/
-https://bloodhound.readthedocs.io/en/latest/data-analysis/edges.html#genericall"
+https://specterops.io/blog/2025/06/25/untrustworthy-trust-builders-account-operators-replicating-trust-attack-aorta/
+https://bloodhound.specterops.io/resources/edges/generic-all"
 Administrators;DC group;Active Directory;SID: S-1-5-32-544;"Members of the Administrators group have complete and unrestricted access to the computer. If the computer is promoted to a domain controller, members of the Administrators group have unrestricted access to the domain.
 
 The Administrators group applies to the Windows Server operating system in the Default Active Directory security groups list.
@@ -322,3 +323,9 @@ There are no known ways to abuse the membership of the group to compromise Tier 
 WHERE n.objectid ENDS WITH 'S-1-5-32-559'
 RETURN n";NO;NO;Community contribution;"https://decoder.cloud/2024/04/24/hello-im-your-domain-admin-and-i-want-to-authenticate-against-you/
 https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/manage/understand-security-groups#performance-log-users"
+Incoming Forest Trust Builders;DC group;Active Directory;SID: S-1-5-32-557;"Members of this group can create incoming, one-way trusts to this forest. (Creation of outbound forest trusts is reserved for Enterprise Admins.)
+Members of this group can create incoming trusts that allow TGT delegation which can lead to compromise of your forest. To learn more about TGT delegation across incoming trust, Updates to TGT delegation across incoming trusts in Windows Server.";NO;NO;YES;The Incoming Forest Trust Builders group can create inbound forest trusts with TGT delegation enabled, which can contribute to a full domain compromise (see external link).;"MATCH (n:Group)
+
+WHERE n.objectid ENDS WITH 'S-1-5-32-557'
+
+RETURN n";NO;NO;Community contribution;https://specterops.io/blog/2025/06/25/untrustworthy-trust-builders-account-operators-replicating-trust-attack-aorta/
