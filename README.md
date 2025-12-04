@@ -15,6 +15,13 @@ Webinars:
 
 **DISCLAIMER: The table does not include all Tier Zero assets yet.** We will add assets to the table throughout the webinar series. So if you think we are missing something, then you are completely right. But feel free to make a pull request or open an issue with the asset you think we should add. All contributions are appreciated. Also if you disagree on something in the table :)
 
+# Complementary Projects
+
+While TierZeroTable aims to provide a comprehensive list of AD and Azure assets classified as Tier Zero, there are other community-driven projects focused on tiered administration with deeper coverage of Azure. These may complement or extend your use of this repository:
+
+ - [AzTier](https://aztier.com/) by [Emilien Socchi](https://github.com/emiliensocchi) — A project to browse a tiered view of Azure/Entra/Microsoft Graph administrative assets based on known attack paths.
+ - [EntraOps](https://www.cloud-architekt.net/entraops/) by [Thomas Naunheim](https://github.com/Cloud-Architekt) — A PowerShell-based solution for classifying and managing privileged identities in Entra ID using the Enterprise Access Model (EAM), with support for automation, historical tracking, and integration with logging / detection systems.
+
 # Table columns
 
 ### Name
@@ -110,10 +117,3 @@ Values:
 
 ### External links
 Links to documentation for the asset, abuse information, etc.
-
-# Complementary Projects
-
-While TierZeroTable aims to provide a comprehensive list of AD and Azure assets classified as Tier Zero, there are other community-driven projects focused on tiered administration with deeper coverage of Azure. These may complement or extend your use of this repository:
-
- - [AzTier](https://aztier.com/) by [Emilien Socchi](https://github.com/emiliensocchi) — A project to browse a tiered view of Azure/Entra/Microsoft Graph administrative assets based on known attack paths.
- - [EntraOps](https://www.cloud-architekt.net/entraops/) by [Thomas Naunheim](https://github.com/Cloud-Architekt) — A PowerShell-based solution for classifying and managing privileged identities in Entra ID using the Enterprise Access Model (EAM), with support for automation, historical tracking, and integration with logging / detection systems.
