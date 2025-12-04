@@ -22,7 +22,7 @@ While TierZeroTable aims to provide a comprehensive list of AD and Azure assets 
  - [AzTier](https://aztier.com/) by [Emilien Socchi](https://github.com/emiliensocchi) — A project to browse a tiered view of Azure/Entra/Microsoft Graph administrative assets based on known attack paths.
  - [EntraOps](https://www.cloud-architekt.net/entraops/) by [Thomas Naunheim](https://github.com/Cloud-Architekt) — A PowerShell-based solution for classifying and managing privileged identities in Entra ID using the Enterprise Access Model (EAM), with support for automation, historical tracking, and integration with logging / detection systems.
 
-# Table columns
+# Table Columns
 
 ### Name
 Common name of the asset.
