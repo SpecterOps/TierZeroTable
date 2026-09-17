@@ -800,6 +800,38 @@
     "References": "https://specterops.io/blog/2025/06/25/untrustworthy-trust-builders-account-operators-replicating-trust-attack-aorta/"
   },
   {
+    "Asset": "Microsoft Entra Connect Server",
+    "Category": "Computer host",
+    "Platform": "Active Directory",
+    "Identification": "Not applicable - Not represented as an object. Identify by locating hosts running the Microsoft Entra Connect Sync (ADSync) service. Microsoft Entra Connect Cloud Sync is a separate product that uses the Microsoft Entra provisioning agent and is not covered by this entry.",
+    "Description": "Microsoft Entra Connect (formerly Azure AD Connect) is the on-premises component used to synchronize identity data between Active Directory and Microsoft Entra ID. It runs on a server that is typically domain-joined and holds the credentials of the AD DS Connector Account, which reads from Active Directory. With Password Hash Synchronization enabled, that account holds directory replication rights on the domain. Write access to Active Directory is granted only when writeback features such as password writeback, device writeback, or group writeback are separately enabled.",
+    "Tier Zero Default Risk": "YES - Takeover",
+    "Tier Zero Config Risk": "N/A - Compromise by default",
+    "Tier Zero": "YES",
+    "Rationale": "Microsoft explicitly documents that the Microsoft Entra Connect server must be treated as a Tier 0 component, the same as a domain controller. An attacker with administrative access to the server's OS can extract the credentials of the AD DS Connector Account from the Microsoft Entra Connect (ADSync) database, which by default has the privileges to perform a DCSync attack against the domain when Password Hash Synchronization is enabled. This yields full compromise of the domain, and where Entra Connect also syncs to a cloud tenant, can be leveraged toward Global Administrator in Entra ID as well - for example by hijacking a vulnerable service principal reachable from the on-premises foothold. There is no known default configuration in which the server is not a security dependency for Tier Zero, so it is Tier Zero by default.",
+    "Cypher": "N/A - Not identifiable via BloodHound collection alone. Cross-reference server inventories/CMDB against known Microsoft Entra Connect installations.",
+    "Microsoft PAS Role": "NO",
+    "AdminSDHolder Protected": "N/A",
+    "Episode": "Community contribution",
+    "References": "https://docs.azure.cn/en-us/entra/identity/hybrid/connect/how-to-connect-install-prerequisites#azure-ad-connect-server\r\nhttps://dirkjanm.io/obtaining-domain-admin-from-azure-ad-via-cloud-kerberos-trust/\r\nhttps://adsecurity.org/?p=4825\r\nhttps://posts.specterops.io/update-dumping-entra-connect-sync-credentials-4a9114734f71\r\nhttps://snotra.uk/from-domain-user-to-domain-admin-da-from-da-to-global-admin-ga.html"
+  },
+  {
+    "Asset": "AD DS Connector Account",
+    "Category": "AD user",
+    "Platform": "Active Directory",
+    "Identification": "SamAccountName typically prefixed 'MSOL_' (auto-provisioned) or a custom name if manually created. Holds DS-Replication-Get-Changes and DS-Replication-Get-Changes-All extended rights on the domain when Password Hash Synchronization is enabled.",
+    "Description": "The AD DS Connector Account is the service account Microsoft Entra Connect uses to read from, and optionally write to, on-premises Active Directory. It is created automatically during setup (or supplied as an existing account) and its credentials are stored in the Microsoft Entra Connect (ADSync) database on the Entra Connect server.",
+    "Tier Zero Default Risk": "YES - Takeover",
+    "Tier Zero Config Risk": "N/A - Compromise by default",
+    "Tier Zero": "YES",
+    "Rationale": "With Password Hash Synchronization enabled (the default and most common sync method), the AD DS Connector Account is granted the Get-Changes and Get-Changes-All extended rights on the domain root, making it capable of performing a DCSync attack and thereby equivalent to Domain Admins. An attacker with administrative access to the Entra Connect server can extract this account's plaintext credentials from the ADSync database and use them directly. The account is therefore Tier Zero.",
+    "Cypher": "MATCH (n:User)-[:GetChanges]->(d:Domain)\r\nMATCH (n)-[:GetChangesAll]->(d)\r\nRETURN n",
+    "Microsoft PAS Role": "NO",
+    "AdminSDHolder Protected": "NO",
+    "Episode": "Community contribution",
+    "References": "https://docs.azure.cn/en-us/entra/identity/hybrid/connect/how-to-connect-install-prerequisites#azure-ad-connect-server\r\nhttps://dirkjanm.io/obtaining-domain-admin-from-azure-ad-via-cloud-kerberos-trust/\r\nhttps://posts.specterops.io/update-dumping-entra-connect-sync-credentials-4a9114734f71"
+  },
+  {
     "Asset": "ESX Admins",
     "Category": "AD group",
     "Platform": "Active Directory",
@@ -846,5 +878,5 @@
     "AdminSDHolder Protected": "NO",
     "Episode": "Community contribution",
     "References": "https://cloud.google.com/blog/topics/threat-intelligence/defending-vsphere-from-unc3944\r\nhttps://cloud.google.com/blog/topics/threat-intelligence/vsphere-active-directory-integration-risks\r\nhttps://knowledge.broadcom.com/external/article/314324/removal-of-integrated-windows-authentica.html\r\nhttps://knowledge.broadcom.com/external/article/433065"
-  }
+   }
 ]
