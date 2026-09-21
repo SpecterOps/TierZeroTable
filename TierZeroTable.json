@@ -916,7 +916,7 @@
     "Category": "Entra ID role",
     "Platform": "Entra ID",
     "Identification": "Template ID: d29b2b05-8046-44ba-8758-1e26182fcf32. Assigned to the on-premises sync service's Entra ID account, created automatically by both Entra Connect Sync and Cloud Sync (e.g. ADToAADSyncServiceAccount@<tenant>.onmicrosoft.com).",
-    "Description": "Both sync products provision a dedicated Entra ID account for the sync engine, assigned the Directory Synchronization Accounts role. Microsoft's current role reference lists no detailed permissions for it, a narrowing from before an August 2024 hardening pass, and does not flag it \"Privileged.\"",
+    "Description": "Both sync products provision a dedicated Entra ID account for the sync engine, assigned the Directory Synchronization Accounts role. Microsoft's current role reference lists only microsoft.directory/onPremisesSynchronization/standard/read as an explicit permission, a narrowing from before an August 2024 hardening pass, and does not flag the role \"Privileged.\"",
     "Tier Zero Default Risk": "NO",
     "Tier Zero Config Risk": "YES - Takeover",
     "Tier Zero": "IT DEPENDS",
