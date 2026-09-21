@@ -878,5 +878,37 @@
     "AdminSDHolder Protected": "NO",
     "Episode": "Community contribution",
     "References": "https://cloud.google.com/blog/topics/threat-intelligence/defending-vsphere-from-unc3944\r\nhttps://cloud.google.com/blog/topics/threat-intelligence/vsphere-active-directory-integration-risks\r\nhttps://knowledge.broadcom.com/external/article/314324/removal-of-integrated-windows-authentica.html\r\nhttps://knowledge.broadcom.com/external/article/433065"
-   }
+   },
+  {
+    "Asset": "AD FS Server",
+    "Category": "Computer host",
+    "Platform": "Active Directory",
+    "Identification": "Not applicable - Not represented as an object. Identify by locating hosts running the Active Directory Federation Services role.",
+    "Description": "AD FS issues SAML/WS-Fed/OAuth tokens so users can authenticate to federated relying parties, commonly including Microsoft Entra ID when an org federates instead of using password hash sync. The token-signing private key is decrypted at runtime in the AD FS process and, in the default configuration (WID), the configuration database that stores it encrypted is otherwise readable only in the AD FS service account's own context.",
+    "Tier Zero Default Risk": "YES - Takeover",
+    "Tier Zero Config Risk": "N/A - Compromise by default",
+    "Tier Zero": "YES",
+    "Rationale": "Microsoft's AD DS tier model lists AD FS by name under Tier 0, the identity control plane, alongside domain controllers and Entra Connect. An attacker with admin access to the server can dump the token-signing key from process memory, or act in the AD FS service account's context to pull the Distributed Key Manager key from AD and decrypt the key stored in the configuration database, then mint a Golden SAML token impersonating any user with any claims against every relying party AD FS trusts, including Entra ID Global Administrator when Entra ID is federated through it. The forged tokens are generated offline and never touch AD FS again, so they do not appear in its logs. This is equivalent to Domain Admin over everything AD FS federates, not a direct DCSync path against the AD domain.",
+    "Cypher": "N/A - Not identifiable via BloodHound collection alone. Cross-reference server inventories/CMDB against hosts running the AD FS role.",
+    "Microsoft PAS Role": "NO",
+    "AdminSDHolder Protected": "N/A",
+    "Episode": "Community contribution",
+    "References": "https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/tier-model\r\nhttps://github.com/mandiant/ADFSDump\r\nhttps://www.cisa.gov/news-events/cybersecurity-advisories/aa21-008a\r\nhttps://www.hunters.security/en/blog/adfs-threat-hunting-2-golden-saml"
+  },
+  {
+    "Asset": "AD FS Configuration Database Server (SQL Server)",
+    "Category": "Computer host",
+    "Platform": "Active Directory",
+    "Identification": "Not applicable - Not represented as an object. Identify by locating the SQL Server instance hosting an AD FS farm's configuration database. Only present when a farm uses a full SQL Server backend instead of the default Windows Internal Database (WID).",
+    "Description": "Larger AD FS farms (over 100 relying party trusts or 30 farm nodes) use a dedicated SQL Server instance for the configuration database instead of the default, locally hosted WID. The database stores the AD FS token-signing key encrypted with a key from the Distributed Key Manager container in Active Directory.",
+    "Tier Zero Default Risk": "NO",
+    "Tier Zero Config Risk": "YES - Takeover",
+    "Tier Zero": "IT DEPENDS",
+    "Rationale": "Most AD FS farms run on WID, which is local to the AD FS server and readable only in the AD FS service account's own context, so this asset does not exist in most deployments. Where a farm uses a full SQL Server backend instead, sysadmin or db_owner access exposes the encrypted token-signing key blob to the SQL Server's own admin population, typically broader than the AD FS host's local admins. That access alone cannot forge tokens, since the Distributed Key Manager key from AD is also required to decrypt the blob, but it is one half of the Golden SAML chain described in the AD FS Server entry and should be scoped and monitored the same way. The server is Tier Zero whenever it is in use.",
+    "Cypher": "N/A - Not identifiable via BloodHound collection alone. Cross-reference AD FS farm configuration against the SQL Server instance hosting its configuration database.",
+    "Microsoft PAS Role": "NO",
+    "AdminSDHolder Protected": "N/A",
+    "Episode": "Community contribution",
+    "References": "https://learn.microsoft.com/en-us/windows-server/identity/ad-fs/technical-reference/the-role-of-the-ad-fs-configuration-database\r\nhttps://learn.microsoft.com/en-us/windows-server/identity/ad-fs/design/federation-server-farm-using-sql-server\r\nhttps://github.com/mandiant/ADFSDump"
+  }
 ]
