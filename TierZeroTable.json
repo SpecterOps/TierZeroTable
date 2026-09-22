@@ -878,5 +878,53 @@
     "AdminSDHolder Protected": "NO",
     "Episode": "Community contribution",
     "References": "https://cloud.google.com/blog/topics/threat-intelligence/defending-vsphere-from-unc3944\r\nhttps://cloud.google.com/blog/topics/threat-intelligence/vsphere-active-directory-integration-risks\r\nhttps://knowledge.broadcom.com/external/article/314324/removal-of-integrated-windows-authentica.html\r\nhttps://knowledge.broadcom.com/external/article/433065"
-   }
+   },
+  {
+    "Asset": "Microsoft Entra Cloud Sync Provisioning Agent Server",
+    "Category": "Computer host",
+    "Platform": "Active Directory",
+    "Identification": "Not applicable - Not represented as an object. Identify by locating domain-joined hosts running the Microsoft Entra provisioning agent (AADConnectProvisioningAgent service). Separate from Microsoft Entra Connect Sync (ADSync); see the \"Microsoft Entra Connect Server\" entry for that product.",
+    "Description": "Microsoft Entra Cloud Sync is Microsoft's agent-based alternative to Entra Connect Sync for synchronizing Active Directory and Entra ID. Each provisioning agent host runs a gMSA (commonly provAgentgMSA$) that is granted AD permissions equivalent to the classic AD DS Connector Account, letting it read from, and with writeback enabled write to, on-premises Active Directory.",
+    "Tier Zero Default Risk": "YES - Takeover",
+    "Tier Zero Config Risk": "N/A - Compromise by default",
+    "Tier Zero": "YES",
+    "Rationale": "Microsoft documents that the agent server \"should be a tier 0 server\" and recommends hardening it as a Control Plane asset, the same language used for domain controllers. An attacker with admin access to the server can dump LSASS or read the gMSA's managed password from AD to obtain its credential. That credential holds Replicating Directory Changes and Replicating Directory Changes All on the domain root by default, granted automatically at install regardless of whether Password Hash Sync is enabled as a feature, which is enough to DCSync the domain.",
+    "Cypher": "N/A - Not identifiable via BloodHound collection alone. Cross-reference server inventories/CMDB against hosts running the Microsoft Entra provisioning agent.",
+    "Microsoft PAS Role": "NO",
+    "AdminSDHolder Protected": "N/A",
+    "Episode": "Community contribution",
+    "References": "https://learn.microsoft.com/en-us/entra/identity/hybrid/cloud-sync/how-to-prerequisites\r\nhttps://learn.microsoft.com/en-us/entra/identity/hybrid/cloud-sync/gmsa-cloud-sync\r\nhttps://www.dsinternals.com/en/retrieving-cleartext-gmsa-passwords-from-active-directory/"
+  },
+  {
+    "Asset": "Microsoft Entra Cloud Sync Provisioning Agent gMSA",
+    "Category": "AD computer",
+    "Platform": "Active Directory",
+    "Identification": "objectClass: msDS-GroupManagedServiceAccount. SamAccountName typically provAgentgMSA$; enumerate with Get-ADServiceAccount. Holds DS-Replication-Get-Changes and DS-Replication-Get-Changes-All on the domain root by default.",
+    "Description": "The provisioning agent runs as a gMSA rather than a standard user account. Its password is managed by AD and retrievable only by principals listed in its PrincipalsAllowedToRetrieveManagedPassword attribute, typically the computer accounts of authorized agent hosts. This is the Cloud Sync equivalent of the AD DS Connector Account.",
+    "Tier Zero Default Risk": "YES - Takeover",
+    "Tier Zero Config Risk": "N/A - Compromise by default",
+    "Tier Zero": "YES",
+    "Rationale": "Microsoft documents that Cloud Sync grants this gMSA the same DCSync-capable rights as classic Entra Connect Sync grants the AD DS Connector Account, applied by default at install. Anyone with admin access to an authorized agent host can extract the managed password (e.g. via DSInternals or GoldenGMSA) and use it to DCSync the domain. The account is therefore Tier Zero.",
+    "Cypher": "// Default gMSA name is provAgentgMSA$; adjust the filter for custom names.\r\nMATCH (n)-[:GetChanges]->(d:Domain)\r\nMATCH (n)-[:GetChangesAll]->(d)\r\nWHERE n.name CONTAINS 'GMSA'\r\nRETURN n",
+    "Microsoft PAS Role": "NO",
+    "AdminSDHolder Protected": "NO",
+    "Episode": "Community contribution",
+    "References": "https://learn.microsoft.com/en-us/entra/identity/hybrid/cloud-sync/gmsa-cloud-sync\r\nhttps://www.dsinternals.com/en/retrieving-cleartext-gmsa-passwords-from-active-directory/\r\nhttps://www.thehacker.recipes/ad/movement/dacl/readgmsapassword"
+  },
+  {
+    "Asset": "Directory Synchronization Accounts service account",
+    "Category": "Entra ID role",
+    "Platform": "Entra ID",
+    "Identification": "Template ID: d29b2b05-8046-44ba-8758-1e26182fcf32. Assigned to the on-premises sync service's Entra ID account, created automatically by both Entra Connect Sync and Cloud Sync (e.g. ADToAADSyncServiceAccount@<tenant>.onmicrosoft.com).",
+    "Description": "Both sync products provision a dedicated Entra ID account for the sync engine, assigned the Directory Synchronization Accounts role. Microsoft's current role reference lists only microsoft.directory/onPremisesSynchronization/standard/read as an explicit permission, a narrowing from before an August 2024 hardening pass, and does not flag the role \"Privileged.\"",
+    "Tier Zero Default Risk": "NO",
+    "Tier Zero Config Risk": "YES - Takeover",
+    "Tier Zero": "IT DEPENDS",
+    "Rationale": "The role previously had a documented escalation path to Global Administrator (Tenable, 2024), largely closed by Microsoft's 2024 hardening. The account still reaches the largely undocumented Entra Connect Sync API (adminwebservice.microsoftonline.com/provisioningservice.svc), which lets a holder mint new sync principals with a cleartext password, reset the passwords of synchronized users, and, for certificate-based Service Principals, pivot through a minted User Principal to reset the Service Principal's certificate (mnemonic, 2025; Tenable, 2025). Whether this reaches a Tier Zero principal depends on which hybrid identities are in scope, since sync filtering excludes flagged built-in accounts but not ordinary members of privileged groups. This is not a Microsoft-documented Tier Zero claim, unlike the two Cloud Sync entries above.",
+    "Cypher": "N/A - Not identifiable via BloodHound collection alone. Cross-reference the sync service account's role assignment against synced/writeback-eligible identities and Tier Zero principals.",
+    "Microsoft PAS Role": "NO",
+    "AdminSDHolder Protected": "N/A",
+    "Episode": "Community contribution",
+    "References": "https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/permissions-reference#directory-synchronization-accounts\r\nhttps://medium.com/tenable-techblog/stealthy-persistence-with-directory-synchronization-accounts-role-in-entra-id-63e56ce5871b\r\nhttps://www.tenable.com/blog/despite-recent-security-hardening-entra-id-synchronization-feature-remains-open-for-abuse\r\nhttps://www.mnemonic.io/resources/blog/deep-dive-into-the-entra-connect-sync-api/"
+  }
 ]
