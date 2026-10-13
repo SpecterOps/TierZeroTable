@@ -36,6 +36,7 @@ Values:
 - AD group
 - AD object
 - AD OU
+- AD site
 - AD user
 - Computer host
 - DC group
