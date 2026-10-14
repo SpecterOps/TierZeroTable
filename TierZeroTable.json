@@ -344,12 +344,12 @@
     "Tier Zero Default Risk": "YES - Takeover",
     "Tier Zero Config Risk": "N/A - Compromise by default",
     "Tier Zero": "YES",
-    "Rationale": "Control over a GPO allows you to compromise users and computers affected by the GPO (see references). If a GPO is linked to a Tier Zero container (Domain, OU, or Site), then the GPO is Tier Zero. ",
-    "Cypher": "MATCH (n:GPO)-[:GPLink]->()-[:Contains]->(m:Base)\r\nWHERE 'admin_tier_0' IN split(m.system_tags, ' ')\r\nRETURN n",
+    "Rationale": "Control over a GPO allows you to compromise users and computers affected by the GPO (see references). If a GPO is linked to a Tier Zero container (Domain, OU, or Site), then the GPO is Tier Zero.",
+    "Cypher": "MATCH (n:GPO)-[:GPLink]->()-[:Contains|ServerIs*1..]->(m:Base)\r\nWHERE m:Tag_Tier_Zero OR 'admin_tier_0' IN split(m.system_tags, ' ')\r\nRETURN DISTINCT n",
     "Microsoft PAS Role": "NO",
     "AdminSDHolder Protected": "NO",
     "Episode": "2",
-    "References": "https://learn.microsoft.com/en-us/previous-versions/windows/desktop/policy/group-policy-objects\r\nhttps://wald0.com/?p=179\r\nhttps://www.trustedsec.com/blog/weaponizing-group-policy-objects-access/"
+    "References": "https://learn.microsoft.com/en-us/previous-versions/windows/desktop/policy/group-policy-objects\r\nhttps://wald0.com/?p=179\r\nhttps://www.trustedsec.com/blog/weaponizing-group-policy-objects-access/\r\nhttps://bloodhound.specterops.io/resources/edges/gp-link\r\nhttps://bloodhound.specterops.io/resources/edges/server-is"
   },
   {
     "Asset": "GPO NOT linked to Tier Zero container",
@@ -360,12 +360,28 @@
     "Tier Zero Default Risk": "NO",
     "Tier Zero Config Risk": "NO",
     "Tier Zero": "NO",
-    "Rationale": "Control over a GPO allows you to compromise users and computers affected by the GPO (see references). If a GPO is not linked to a Tier Zero container (Domain, OU, or Site), then the GPO does not effect Tier Zero principals and is therefore not Tier Zero. ",
-    "Cypher": "MATCH (n:GPO)\r\nOPTIONAL MATCH p = (n)-[:GPLink]->()-[:Contains]->(m:Base)\r\nWHERE 'admin_tier_0' IN split(m.system_tags, ' ')\r\nWITH n,p\r\nWHERE p IS NULL\r\nRETURN n",
+    "Rationale": "Control over a GPO allows you to compromise users and computers affected by the GPO (see references). If a GPO is not linked to a Tier Zero container (Domain, OU, or Site), then the GPO does not effect Tier Zero principals and is therefore not Tier Zero.",
+    "Cypher": "MATCH (n:GPO)\r\nOPTIONAL MATCH p = (n)-[:GPLink]->()-[:Contains|ServerIs*1..]->(m:Base)\r\nWHERE m:Tag_Tier_Zero OR 'admin_tier_0' IN split(m.system_tags, ' ')\r\nWITH n,p\r\nWHERE p IS NULL\r\nRETURN DISTINCT n",
     "Microsoft PAS Role": "NO",
     "AdminSDHolder Protected": "NO",
     "Episode": "2",
-    "References": "https://learn.microsoft.com/en-us/previous-versions/windows/desktop/policy/group-policy-objects\r\nhttps://wald0.com/?p=179\r\nhttps://www.trustedsec.com/blog/weaponizing-group-policy-objects-access/"
+    "References": "https://learn.microsoft.com/en-us/previous-versions/windows/desktop/policy/group-policy-objects\r\nhttps://wald0.com/?p=179\r\nhttps://www.trustedsec.com/blog/weaponizing-group-policy-objects-access/\r\nhttps://bloodhound.specterops.io/resources/edges/gp-link\r\nhttps://bloodhound.specterops.io/resources/nodes/site-subnet"
+  },
+  {
+    "Asset": "AD Site",
+    "Category": "AD site",
+    "Platform": "Active Directory",
+    "Identification": "ObjectClass: site, under CN=Sites,CN=Configuration,<Forest root domain DN>",
+    "Description": "An Active Directory site groups well-connected IP subnets and holds server objects representing its domain controllers. Sites organize replication and help clients locate nearby domain controllers. GPOs can be linked to a site to apply policy to its domain controllers and member computers, including user-side policy for users signing in to those computers.",
+    "Tier Zero Default Risk": "YES - Takeover",
+    "Tier Zero Config Risk": "N/A - Compromise by default",
+    "Tier Zero": "YES",
+    "Rationale": "A site is Tier Zero when its policies can affect domain controllers or other Tier Zero computers or users. The default site, Default-First-Site-Name, contains the forest's domain controllers until additional sites are configured, so control over it enables Tier Zero takeover in a default environment. GenericAll, GenericWrite, or WriteGPLink on a site allows an attacker to change its gPLink attribute and apply malicious policy. Control over an existing GPO linked to the site provides another takeover path.",
+    "Cypher": "MATCH (n:Site)\r\nRETURN n",
+    "Microsoft PAS Role": "NO",
+    "AdminSDHolder Protected": "NO",
+    "Episode": "Community contribution",
+    "References": "https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-adts/cdacdd51-f324-41e9-b83f-71263902dabe\r\nhttps://learn.microsoft.com/en-us/windows-server/identity/ad-ds/plan/designing-the-site-topology\r\nhttps://bloodhound.specterops.io/resources/nodes/site\r\nhttps://bloodhound.specterops.io/resources/nodes/site-server\r\nhttps://bloodhound.specterops.io/resources/nodes/site-subnet\r\nhttps://bloodhound.specterops.io/resources/edges/write-gp-link\r\nhttps://www.synacktiv.com/en/publications/site-unseen-enumerating-and-attacking-active-directory-sites"
   },
   {
     "Asset": "krbtgt",
